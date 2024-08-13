@@ -1,6 +1,5 @@
 import { useState , useEffect} from 'react'
 import axios from 'axios'
-import countrieServices from './services/countrieServices';
 import Countries from './components/countries';
 
 
@@ -204,11 +203,15 @@ function App() {
     }
   }
 
+
+  const handleShow = (event) =>{
+    setDisplayCountery([event.target.parentElement.childNodes[0].nodeValue])
+  }
   return (
     <>
         <label> find country <input onChange={handleChange} value = {country} /></label>
 
-        <Countries countryName = {displayCountry} />
+        <Countries countryName = {displayCountry} handleFunction = {handleShow} />
 
     </>
   )

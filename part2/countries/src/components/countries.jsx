@@ -1,19 +1,23 @@
-
+import WeatherCondition from "./weather";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const Countries = ({ countryName }) => {
-  const [country, setCountry] = useState(null);
+const Countries = ({ countryName , handleFunction}) => {
+  const [countryS, setScountry] = useState(null);
+  const [position, setPosition] = useState([]);
+
 
   useEffect(() => {
     // Only fetch data if there is exactly one country name
     if (countryName.length === 1) {
         // to delete the return the country state to default
-        setCountry(null)
+        setScountry(null)
+        setPosition([])
       axios
         .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countryName[0]}`)
         .then(response => {
-          setCountry(response.data); // Set the fetched data in state
+          setScountry(response.data); // Set the fetched data in state
+          setPosition(response.data.latlng)
         })
     }
 
@@ -30,7 +34,7 @@ const Countries = ({ countryName }) => {
 
   // Render a list of country names if more than one is provided
   if (countryName.length > 1) {
-    return countryName.map(c => <p key={c}>{c}</p>);
+    return countryName.map(c => <p key={c}>{c} <button onClick={handleFunction}>shown</button></p>);
   }
 
   // Render a list of country names if more than one is provided
@@ -38,10 +42,16 @@ const Countries = ({ countryName }) => {
     return (
         <div>
             {
-                country ? (
+                countryS ? (
                     <>
-                        <h1>{country.name.common}</h1>
-                        <p>{country.capital ? country.capital[0] : "No capital available"}</p>
+                        <h1>{countryS.name.common}</h1>
+                        <p>{countryS.capital ? countryS.capital[0] : "No capital available"}</p>
+                        <h3>languges : </h3>
+                        <ul>
+                          {Object.keys(countryS.languages).map(l=> <li key = {countryS.languages[l]}>{countryS.languages[l]}</li>)}
+                        </ul>
+                        <img src={countryS.flags.png} alt={countryS.flags.alt}/>
+                        <WeatherCondition location = {position}/>
                     </>
                 )
                 : (<p>loading ...</p>)
